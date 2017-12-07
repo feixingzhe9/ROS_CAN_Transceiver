@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package>
+  <name>can_interface</name>
+  <version>0.0.1</version>
+  <description>The can interface package</description>
+
+  <maintainer email="adam.huang@mrobot.cn">Adam Huang</maintainer>
+
+  <license>BSD</license>
+
+  <author email="adam.huang@mrobot.cn">Adam Huang</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>boost</build_depend>
+
+  <run_depend>roscpp</run_depend>
+  <build_depend>boost</build_depend>
+
+  <export>
+    <cpp lflags="-L./include/can_interface/"/>
+  </export>
+</package>

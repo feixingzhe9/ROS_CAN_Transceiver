@@ -1,0 +1,10 @@
+<launch>
+
+    <node name="can_transceiver" pkg="roscan" type="can_transceiver" respawn="true" output="screen">
+        <param name="can_log" type="bool" value="false" />
+        <param name="buffer_log" type="bool" value="false" />
+    </node>
+    <node name="mrobot_can_power_node" pkg="mrobot_can_power" type="mrobot_can_power_node" respawn="true"/>
+    <node name="can_sub_powerboard_node" pkg="can_sub_powerboard" type="can_sub_powerboard_node" respawn="true"/>
+
+</launch>

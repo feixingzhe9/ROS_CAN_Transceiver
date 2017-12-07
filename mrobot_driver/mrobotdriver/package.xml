@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package>
+  <name>mrobotdriver</name>
+  <version>0.0.1</version>
+  <description>The mrobotdriver package</description>
+
+  <maintainer email="adam.huang@mrobot.cn">Adam Huang</maintainer>
+
+  <license>BSD</license>
+
+  <author email="adam.huang@mrobot.cn">Adam Huang</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+</package>

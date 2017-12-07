@@ -1,0 +1,4 @@
+<launch>
+    <node name="can_transceiver" pkg="roscan" type="can_transceiver" respawn="true" output="screen"/>
+    <node name="sub_powerboard_node" pkg="can_sub_powerboard" type="can_sub_powerboard_node" respawn="true" output="screen"/>
+</launch>

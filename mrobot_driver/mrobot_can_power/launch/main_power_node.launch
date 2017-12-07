@@ -1,0 +1,6 @@
+<launch>
+
+    <node name="can_transceiver" pkg="roscan" type="can_transceiver" respawn="true"/>
+    <node name="mrobot_can_power_node" pkg="mrobot_can_power" type="mrobot_can_power_node" respawn="true" output="screen"/>
+
+</launch>
