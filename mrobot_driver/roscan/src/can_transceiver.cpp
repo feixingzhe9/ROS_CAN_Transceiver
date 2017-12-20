@@ -80,7 +80,7 @@ class can_transceiver
             can_power_sub = n.subscribe("tx_power_node", 1000, &can_transceiver::canReceiveCallback, this);//adam
             can_sensor_sub = n.subscribe("tx_sensor_node", 1000, &can_transceiver::canReceiveCallback, this);//kiqi
             can_supersonic_sub = n.subscribe("ultrasonic_to_can", 1000, &can_transceiver::canReceiveCallback, this);//kaka@2017/11/19
-            can_micro_laser_sub = n.subscribe("ultrasonic_to_can", 1000, &can_transceiver::canReceiveCallback, this);//kaka@2017/11/30
+            //can_micro_laser_sub = n.subscribe("ultrasonic_to_can", 1000, &can_transceiver::canReceiveCallback, this);//kaka@2017/11/30
             can_base_sub = n.subscribe("tx_base_node", 1000, &can_transceiver::canReceiveCallback, this);//zero
             can_sub_power_sub = n.subscribe("tx_sub_power_node", 1000, &can_transceiver::canReceiveCallback, this);//kaka
             can_test_sub = n.subscribe("tx_test_node", 1000, &can_transceiver::canReceiveCallback, this);//
@@ -173,11 +173,10 @@ class can_transceiver
                         can_test_pub.publish(can_msg);
                         break;
 
-                   //case 0x60:
-                        //if(can_id_u.can_id_stru.DstMacID == 1)
-                            //pub2starline_pub.publish(can_msg);
-                        //break;
-                    case 0x60:
+                   case 0x60:
+                        if(can_id_u.can_id_stru.DstMacID == 1)
+                            pub2starline_pub.publish(can_msg);
+                            //break;
                     case 0x61:
                     case 0x62:
                     case 0x63:
