@@ -71,7 +71,7 @@ def progress_bar(num, total):
 def can_id_build(update_step=0):
     reserve = 0x0
     srcMacID = 0x01
-    dstMacID = 0x66
+    dstMacID = 0x6c
     ack = 0x00
     funcID = 0x01
     sourceID = 0x10 + update_step
