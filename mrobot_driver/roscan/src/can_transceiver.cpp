@@ -168,14 +168,14 @@ class can_transceiver
                     case 0x52://Kaka: noah powerboard
                         can_to_noah_powerboard_pub.publish(can_msg);
                         break;
-                    case 0x6f:
+                    case 0xD5:
                         can_rfid_pub.publish(can_msg);
                         can_test_pub.publish(can_msg);
                         break;
 
                    case 0x60:
-                        if(can_id_u.can_id_stru.DstMacID == 1)
-                            pub2starline_pub.publish(can_msg);
+                        //if(can_id_u.can_id_stru.DstMacID == 1)
+                            //pub2starline_pub.publish(can_msg);
                             //break;
                     case 0x61:
                     case 0x62:
@@ -191,6 +191,7 @@ class can_transceiver
                     case 0x6c:
                     case 0x6d:
                     case 0x6e:
+                    case 0x6f:
                         can_supersonic_pub.publish(can_msg);
                         can_test_pub.publish(can_msg);//firmware update
                         break;
@@ -283,6 +284,7 @@ int main(int argc, char **argv)
     ROS_INFO("start to create node...");
     ros::param::get("~can_log", is_can_log_on);
     ros::param::get("~buffer_log", is_buffer_log_on);
+
     can_transceiver *node = new can_transceiver(is_can_log_on, is_buffer_log_on);
 
     if( node->can_itf->init_ret() )

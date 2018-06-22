@@ -9,7 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 catkin_package(
-   CATKIN_DEPENDS roscpp rospy std_msgs can_interface
+   CATKIN_DEPENDS roscpp rospy std_msgs can_interface mrobot_driver_msgs
    INCLUDE_DIRS include
    LIBRARIES ${PROJECT_NAME}
 )
@@ -24,10 +24,11 @@ include_directories(
   include
 )
 
-
 add_library(${PROJECT_NAME} src/can_transceiver.cpp)
+add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 add_executable(can_transceiver src/can_transceiver.cpp)
+add_dependencies(can_transceiver ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(can_transceiver
   ${catkin_LIBRARIES}
@@ -51,6 +52,11 @@ install(DIRECTORY include/
 install(DIRECTORY launch/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
   FILES_MATCHING PATTERN "*.launch"
+)
+
+install(DIRECTORY config
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  USE_SOURCE_PERMISSIONS
 )
 
 #############
