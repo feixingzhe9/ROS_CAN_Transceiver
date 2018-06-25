@@ -1,8 +1,7 @@
 <launch>
-    <node name="can_transceiver" pkg="roscan" type="can_transceiver" respawn="true" output="screen">
-        <param name="can_log" type="bool" value="false" />
-        <param name="buffer_log" type="bool" value="false" />
+    <node name="can_transceiver" pkg="roscan" type="can_transceiver" respawn="true" output="screen"/>
+    <param name="can_log" type="bool" value="true" />
+    <param name="buffer_log" type="bool" value="false" />
     <rosparam file="$(find roscan)/config/roscan.yaml" command="load"/>
-    </node>
-</launch>
 
+</launch>
