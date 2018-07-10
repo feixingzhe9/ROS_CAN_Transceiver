@@ -14,6 +14,7 @@ from mrobot_driver_msgs.msg import vci_can
 
 global g_tx_total
 global g_rx_total
+RFID_NODE_VER = "V0.2"
 
 g_tx_total = 0
 g_rx_total = 0
@@ -26,7 +27,7 @@ flag = 1
 def can_id_build():
     reserve = 0x0
     srcMacID = 0x01
-    dstMacID = 0x6f
+    dstMacID = 0xd5
     ack = 0x00
     funcID = 0x01
     sourceID = 0x03
@@ -124,11 +125,12 @@ def main():
 
 
 if __name__ == '__main__':
-    rfid_pub= None
+    rfid_pub = None
     to_app_pub = None
     to_hall_pub = None
     try:
         rospy.init_node('rfid', anonymous=True)
+        rospy.set_param("rfid_node_version", RFID_NODE_VER)
         rospy.Subscriber("rx_rfid_node", vci_can, data_received)
         rfid_pub = rospy.Publisher('tx_rfid_node', vci_can, queue_size=10)
         to_app_pub = rospy.Publisher('rfid_pub', String, queue_size=10)
