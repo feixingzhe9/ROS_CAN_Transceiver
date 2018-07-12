@@ -24,13 +24,16 @@ test_data = 0
 global flag
 flag = 1
 
-def can_id_build():
-    reserve = 0x0
-    srcMacID = 0x01
-    dstMacID = 0xd5
-    ack = 0x00
-    funcID = 0x01
-    sourceID = 0x03
+global mcu_rfid_version
+mcu_rfid_version = "NoahC001M18"
+
+def can_id_build(sourceID, ack, funcID, reserve = 0, srcMacID = 0x01, dstMacID = 0xd5):
+    #reserve = 0x0
+    #srcMacID = 0x01
+    #dstMacID = 0xd5
+    #ack = 0x00
+    #funcID = 0x01
+    #sourceID = 0x03
     canID = reserve << 28 | srcMacID << 21 | dstMacID << 13 | ack << 12 | funcID << 8 | sourceID
     return canID
 
@@ -41,17 +44,31 @@ def trigger_test():
     if not flag:
         return
     can_msg = vci_can()
-    can_msg.ID = can_id_build()#0x012a0103
-    can_msg.DataLen = 5
+    can_msg.ID = can_id_build(sourceID = 0x03, ack = 0x00, funcID = 0x01)#0x012a0103
+    can_msg.DataLen = 1
 
-    can_msg.Data = '\x00' + struct.pack(">i", test_data)
-    #can_msg.Data = [0x00,0x01,0x02,0x03,0x04,0x05]
+    #can_msg.Data = '\x00' + struct.pack(">i", test_data)
+    can_msg.Data = [0x00]
     print 'sent:' + repr(can_msg.Data)
     rfid_pub.publish(can_msg)
     a = canMsg(can_msg)
     a.print_info()
     flag = 0
     g_tx_total += 1
+    print 'total sent: %d'%g_tx_total
+
+def get_mcu_rfid_version():
+    can_msg = vci_can()
+    can_msg.ID = can_id_build(sourceID = 0x01, ack = 0, funcID = 1)
+    can_msg.DataLen = 1
+
+    can_msg.Data = '\x00'
+
+    print 'sent:' + repr(can_msg.Data)
+    rfid_pub.publish(can_msg)
+    a = canMsg(can_msg)
+    a.print_info()
+    flag = 0
     print 'total sent: %d'%g_tx_total
 
 def data_received(can_msg):
@@ -103,6 +120,14 @@ def data_received(can_msg):
         hall_msg = UInt8MultiArray()
         hall_msg.data = a.get_data()[1:]
         to_hall_pub.publish(hall_msg)
+    if a.get_sourceID() == 0x01:
+        data_len = a.get_data_length()
+        global mcu_rfid_version 
+        mcu_rfid_version = mcu_rfid_version + can_msg.Data[1:]
+        print "mcu_rfid_version: " + mcu_rfid_version 
+        rospy.set_param("mcu_rfid_version", mcu_rfid_version)
+        #for i in range [0:data_len]:
+        
 
 
 def main():
@@ -114,6 +139,8 @@ def main():
     rfid_data = ''
     rate = rospy.Rate(10) #10hz
     time.sleep(1)
+    get_mcu_rfid_version()
+    time.sleep(0.5)
     while not rospy.is_shutdown():
         try:
             #trigger_test()
