@@ -27,7 +27,7 @@ class can_transceiver
         ros::Publisher can_unknown_pub;
         ros::Publisher can_test_pub;
         ros::Publisher can_rfid_pub;
-        ros::Publisher pub2starline_pub;
+        //ros::Publisher pub2starline_pub;
         ros::Publisher can_to_noah_powerboard_pub;
         ros::Publisher can_to_auto_charger_pub;
         ros::Publisher can_to_laser_pub;
@@ -75,7 +75,7 @@ class can_transceiver
             can_unknown_pub = n.advertise<mrobot_driver_msgs::vci_can>("rx_unknown_node", 1000);//adam
             can_test_pub = n.advertise<mrobot_driver_msgs::vci_can>("rx_test_node", 1000);//adam
             can_rfid_pub = n.advertise<mrobot_driver_msgs::vci_can>("rx_rfid_node", 1000);//adam@2017/09/21
-            pub2starline_pub = n.advertise<mrobot_driver_msgs::vci_can>("rx_sensor_node", 1000);//milk@2017/10/24
+            //pub2starline_pub = n.advertise<mrobot_driver_msgs::vci_can>("rx_sensor_node", 1000);//milk@2017/10/24
 
             can_power_sub = n.subscribe("tx_power_node", 1000, &can_transceiver::canReceiveCallback, this);//adam
             can_sensor_sub = n.subscribe("tx_sensor_node", 1000, &can_transceiver::canReceiveCallback, this);//kiqi
@@ -282,8 +282,10 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "can_transceiver", ros::init_options::NoSigintHandler);
 
     ROS_INFO("start to create node...");
-    ros::param::get("~can_log", is_can_log_on);
-    ros::param::get("~buffer_log", is_buffer_log_on);
+    ros::param::get("/can_log", is_can_log_on);
+    ros::param::get("/buffer_log", is_buffer_log_on);
+    ROS_INFO("is_can_log_on: %d",is_can_log_on);
+    ROS_INFO("is_buffer_log_on: %d",is_buffer_log_on);
 
     can_transceiver *node = new can_transceiver(is_can_log_on, is_buffer_log_on);
 
