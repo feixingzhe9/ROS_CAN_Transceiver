@@ -6,7 +6,7 @@ import os,sys
 from time import sleep,time,ctime
 import rospy
 import struct
-from canMsg import canMsg
+from canMsg import CanMsg
 from std_msgs.msg import String
 from mrobot_driver_msgs.msg import vci_can
 
@@ -14,7 +14,7 @@ filename = 'test.bin'
 
 for_ack_index = 0
 for_ack_group = 0
-def HexShow(argv):
+def print_hex_string(argv):
         result = ''
         hLen = len(argv)
         for i in xrange(hLen):
@@ -73,16 +73,14 @@ def progress_bar(num, total):
 def can_id_build(update_step=0):
     reserve = 0x0
     srcMacID = 0x01
-    #dstMacID = 0x6b
     dstMacID = dst_can_mac_id
-    #rospy.loginfo("dstMacID : 0x%x"%dstMacID)
     ack = 0x00
     funcID = 0x01
     sourceID = 0x10 + update_step
     canID = reserve << 28 | srcMacID << 21 | dstMacID << 13 | ack << 12 | funcID << 8 | sourceID
     return canID
 
-def longFramePublish(msg):
+def publish_long_frame(msg):
     can_msg = vci_can()
     can_msg.ID = msg.ID
     seg_polo0 = int('0x40', 16)
@@ -117,7 +115,7 @@ def longFramePublish(msg):
          #a = canMsg(can_msg)
          #a.print_info()
         upgrade_pub.publish(can_msg)
-    
+
 def upgradePrepare():
     firmwareSize = '%08x'%os.path.getsize(filename)
     firmwareMd5 = md5sum(filename)
@@ -127,10 +125,11 @@ def upgradePrepare():
     can_msg.ID = can_id_build()
     can_msg.DataLen = 20
     can_msg.Data = firmwareMd5.decode('hex') + firmwareSize.decode('hex')
-    longFramePublish(can_msg)
-    HexShow(can_msg.Data)
+    publish_long_frame(can_msg)
+    print_hex_string(can_msg.Data)
     print 'can_data.len:%d' %(len(can_msg.Data))
-def upgradeFirmwareSending():
+
+def upgrade_firmware():
     global is_upgrade_ack
     global wait_cnt
     global for_ack_index
@@ -197,15 +196,15 @@ def upgradeFirmwareSending():
                 count += 1
                 #print "count: %d"%count
                 group = count % 256
-                index = (count / 256) % 64 
+                index = (count / 256) % 64
                 progress_bar(count*6, filesize)
             else:
                 sleep(0.015)
-                wait_cnt += 1 
+                wait_cnt += 1
                 if wait_cnt > 50:
                     resend_count = count - 1
                     resend_group = resend_count % 256
-                    resend_index = (resend_count / 256) % 64 
+                    resend_index = (resend_count / 256) % 64
                     #print "count form resend: %d"%count
                     writeLen = len(strRead)
                     can_msg.DataLen = 2 + writeLen
@@ -236,7 +235,7 @@ def upgradeFirmwareSending():
     firmware.close()
     return True
 
-def upgradeFinishCheck():
+def check_upgrade_result():
     can_msg = vci_can()
     can_msg.ID = can_id_build(update_step=2)
     can_msg.DataLen = 1
@@ -245,7 +244,7 @@ def upgradeFinishCheck():
      #a = canMsg(can_msg)
      #a.print_info()
 
-def data_received(can_msg):
+def can_receive_callback(can_msg):
      #seg_polo0 = int('0x40', 16)
      #seg_polo1 = int('0x80', 16)
      #seg_polo2 = int('0xc0', 16)
@@ -256,21 +255,21 @@ def data_received(can_msg):
     global for_ack_group
     global is_prepare_over
     global is_upgarde_finish_check_over
-    a = canMsg(can_msg)
+    a = CanMsg(can_msg)
      #a.print_info()
-    if a.get_sourceID() == 0x10:
+    if a.get_source_id() == 0x10:
         if a.get_data()[1] == 0:
             is_prepare_ok = True
-            is_prepare_over = True 
+            is_prepare_over = True
             print 'mcu prepare ok'
-    elif a.get_sourceID() == 0x11:
+    elif a.get_source_id() == 0x11:
         #print " for_ack_index: %d"%for_ack_index, "for_ack_group: %d"%for_ack_group
         if for_ack_index == a.get_data()[1] & 0x3f and for_ack_group == a.get_data()[2]:
             is_upgrade_ack = True
             receive_count += 1
             #print 'get ack index %d'%for_ack_index, 'get ack group %d'%for_ack_group
          #print 'rx_count:%d,frame id:%d'%(receive_count, (a.get_data()[2]*64 + a.get_data()[1] - seg_polo1) + 1)
-    elif a.get_sourceID() == 0x12:
+    elif a.get_source_id() == 0x12:
         is_upgarde_finish_check_over = True
         if a.get_data()[1] == 0:
             print 'md5 check correct'
@@ -291,18 +290,18 @@ def main():
     while not rospy.is_shutdown():
         if is_prepare_over == False:
             upgradePrepare()
-            #is_prepare_over = True 
+            #is_prepare_over = True
         try:
             if is_prepare_ok == False:
                 print 'mcu not ok'
             else:
-                #upgradeFirmwareSending()
-                if not upgradeFirmwareSending():
+                #upgrade_firmware()
+                if not upgrade_firmware():
                     break
                 else:
                     break
                 #if not is_upgarde_finish_check_over:
-                    #upgradeFinishCheck()
+                    #check_upgrade_result()
                     #break
                 break
 
@@ -324,13 +323,13 @@ if __name__ == "__main__":
     pub_topic = 'tx_test_node'
     try:
         rospy.init_node('upgrade_node', anonymous=True)
-        rospy.Subscriber(sub_topic, vci_can, data_received)
+        rospy.Subscriber(sub_topic, vci_can, can_receive_callback)
         upgrade_pub = rospy.Publisher(pub_topic, vci_can, queue_size=1000)
         dst_can_mac_id = input("\n  Please input dst_can_mac_id: \n  ")
-        
+
         if isinstance(dst_can_mac_id,int):
             if dst_can_mac_id <= 0xff:
-                rospy.loginfo ("  get input dst_can_mac_id :0x%x"%dst_can_mac_id)  
+                rospy.loginfo ("  get input dst_can_mac_id :0x%x"%dst_can_mac_id)
             else:
                 rospy.logfatal("input value is NOT in 0x00 ~ 0xff ! ! ! !");
                 exit()
@@ -339,7 +338,7 @@ if __name__ == "__main__":
             exit()
         sleep(1)
         main()
-        upgradeFinishCheck()
+        check_upgrade_result()
     except Exception:
         rospy.logerr(sys.exc_info())
         rospy.loginfo("lost connect")
