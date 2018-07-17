@@ -70,7 +70,7 @@ def progress_bar(num, total):
     else:
         sys.stdout.write('\n')
 
-def can_id_build(update_step=0):
+def build_can_id(update_step=0):
     reserve = 0x0
     srcMacID = 0x01
     dstMacID = dst_can_mac_id
@@ -116,13 +116,13 @@ def publish_long_frame(msg):
          #a.print_info()
         upgrade_pub.publish(can_msg)
 
-def upgradePrepare():
+def prepare_upgrade():
     firmwareSize = '%08x'%os.path.getsize(filename)
     firmwareMd5 = md5sum(filename)
     print 'firmwareMd5:'+ firmwareMd5
     print 'firmSize:' + firmwareSize
     can_msg = vci_can()
-    can_msg.ID = can_id_build()
+    can_msg.ID = build_can_id()
     can_msg.DataLen = 20
     can_msg.Data = firmwareMd5.decode('hex') + firmwareSize.decode('hex')
     publish_long_frame(can_msg)
@@ -137,7 +137,7 @@ def upgrade_firmware():
     send_package_start_time = rospy.get_time()
     wait_cnt = 0
     can_msg = vci_can()
-    can_msg.ID = can_id_build(update_step=1)
+    can_msg.ID = build_can_id(update_step=1)
     seg_polo0 = int('0x40', 16)
     seg_polo1 = int('0x80', 16)
     seg_polo2 = int('0xc0', 16)
@@ -237,7 +237,7 @@ def upgrade_firmware():
 
 def check_upgrade_result():
     can_msg = vci_can()
-    can_msg.ID = can_id_build(update_step=2)
+    can_msg.ID = build_can_id(update_step=2)
     can_msg.DataLen = 1
     can_msg.Data = '\x00'
     upgrade_pub.publish(can_msg)
@@ -289,7 +289,7 @@ def main():
     receive_count = 0
     while not rospy.is_shutdown():
         if is_prepare_over == False:
-            upgradePrepare()
+            prepare_upgrade()
             #is_prepare_over = True
         try:
             if is_prepare_ok == False:
