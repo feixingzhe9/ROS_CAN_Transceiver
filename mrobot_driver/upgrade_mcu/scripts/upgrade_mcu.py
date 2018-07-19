@@ -12,6 +12,8 @@ from mrobot_driver_msgs.msg import vci_can
 
 filename = 'test.bin'
 
+UPGRADE_MCU_NODE_VERSION = "upgrade_mcu_v001"
+
 for_ack_index = 0
 for_ack_group = 0
 def print_hex_string(argv):
@@ -323,6 +325,7 @@ if __name__ == "__main__":
     pub_topic = 'tx_test_node'
     try:
         rospy.init_node('upgrade_node', anonymous=True)
+        rospy.set_param("upgrade_mcu__node_version", UPGRADE_MCU_NODE_VERSION)
         rospy.Subscriber(sub_topic, vci_can, can_receive_callback)
         upgrade_pub = rospy.Publisher(pub_topic, vci_can, queue_size=1000)
         dst_can_mac_id = input("\n  Please input dst_can_mac_id: \n  ")
