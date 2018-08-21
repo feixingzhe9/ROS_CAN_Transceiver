@@ -31,6 +31,7 @@ class can_transceiver
         ros::Publisher can_to_noah_powerboard_pub;
         ros::Publisher can_to_auto_charger_pub;
         ros::Publisher can_to_laser_pub;
+        ros::Publisher can_to_smart_lock_pub;
 
         ros::Subscriber can_power_sub;
         ros::Subscriber can_sensor_sub;
@@ -44,6 +45,7 @@ class can_transceiver
         ros::Subscriber noah_powerboard_to_can_sub;
         ros::Subscriber auto_charger_to_can_sub;
         ros::Subscriber laser_to_can_sub;
+        ros::Subscriber smart_lock_to_can_sub;
 
         ros::Publisher arm_move_pub;
         ros::Publisher head_move_pub;
@@ -88,6 +90,8 @@ class can_transceiver
             noah_powerboard_to_can_sub = n.subscribe("noah_powerboard_to_can", 1000, &can_transceiver::canReceiveCallback, this);//Kaka@2017/10/30
             auto_charger_to_can_sub = n.subscribe("auto_charger_to_can", 1000, &can_transceiver::canReceiveCallback, this);//Kaka@2017/11/06
             laser_to_can_sub = n.subscribe("laser_to_can", 1000, &can_transceiver::canReceiveCallback, this);//Kaka@2017/11/16
+            smart_lock_to_can_sub = n.subscribe("smart_lock_to_can", 1000, &can_transceiver::canReceiveCallback, this);//Kaka@2018/08/08
+
 
 
             arm_move_pub = n.advertise<mrobot_driver_msgs::vci_can>("arm_control_node", 1000);
@@ -97,6 +101,8 @@ class can_transceiver
             can_to_noah_powerboard_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_noah_powerboard", 1000);//Kaka@2017/10/30
             can_to_auto_charger_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_auto_charger", 1000);//Kaka@2017/11/06
             can_to_laser_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_laser", 1000);//Kaka@2017/11/16
+            can_to_smart_lock_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_smart_lock", 1000);//Kaka@2018/08/08
+
 
             arm_sub = n.subscribe("arm_msgs", 1000, &can_transceiver::canReceiveCallback, this);
             arm_motor_sub = n.subscribe("arm_motor_control", 1000, &can_transceiver::canReceiveCallback, this);
@@ -172,6 +178,12 @@ class can_transceiver
                         can_rfid_pub.publish(can_msg);
                         can_test_pub.publish(can_msg);
                         break;
+                    case 0xD6:
+                        can_to_smart_lock_pub.publish(can_msg);
+                        can_test_pub.publish(can_msg);
+                        break;
+
+
 
                    case 0x60:
                         //if(can_id_u.can_id_stru.DstMacID == 1)
