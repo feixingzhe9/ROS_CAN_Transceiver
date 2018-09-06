@@ -3,17 +3,20 @@ project(mrobot_driver_msgs)
 
 find_package(catkin REQUIRED COMPONENTS
   std_msgs
+  sensor_msgs
   message_generation
 )
 
 add_message_files(
   FILES
   vci_can.msg
+  sonar_msgs.msg
 )
 
 generate_messages(
   DEPENDENCIES
   std_msgs
+  sensor_msgs
 )
 
 catkin_package(
