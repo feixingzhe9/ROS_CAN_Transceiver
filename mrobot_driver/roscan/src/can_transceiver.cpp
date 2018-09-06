@@ -90,7 +90,7 @@ class can_transceiver
             noah_powerboard_to_can_sub = n.subscribe("noah_powerboard_to_can", 1000, &can_transceiver::canReceiveCallback, this);//Kaka@2017/10/30
             auto_charger_to_can_sub = n.subscribe("auto_charger_to_can", 1000, &can_transceiver::canReceiveCallback, this);//Kaka@2017/11/06
             laser_to_can_sub = n.subscribe("laser_to_can", 1000, &can_transceiver::canReceiveCallback, this);//Kaka@2017/11/16
-            smart_lock_to_can_sub = n.subscribe("smart_lock_to_can", 1000, &can_transceiver::canReceiveCallback, this);//Kaka@2018/08/08
+            smart_lock_to_can_sub = n.subscribe("smart_lock_to_can", 1000, &can_transceiver::canReceiveCallback, this);//Kaka@2018/08/15
 
 
 
@@ -101,7 +101,7 @@ class can_transceiver
             can_to_noah_powerboard_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_noah_powerboard", 1000);//Kaka@2017/10/30
             can_to_auto_charger_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_auto_charger", 1000);//Kaka@2017/11/06
             can_to_laser_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_laser", 1000);//Kaka@2017/11/16
-            can_to_smart_lock_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_smart_lock", 1000);//Kaka@2018/08/08
+            can_to_smart_lock_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_smart_lock", 1000);//Kaka@2018/08/15
 
 
             arm_sub = n.subscribe("arm_msgs", 1000, &can_transceiver::canReceiveCallback, this);
