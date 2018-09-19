@@ -4,12 +4,12 @@ project(roscan)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
-  mrobot_driver_msgs
+  mrobot_msgs
   can_interface
 )
 
 catkin_package(
-   CATKIN_DEPENDS roscpp rospy std_msgs can_interface mrobot_driver_msgs
+   CATKIN_DEPENDS roscpp rospy std_msgs can_interface mrobot_msgs
    INCLUDE_DIRS include
    LIBRARIES ${PROJECT_NAME}
 )

@@ -8,7 +8,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <signal.h>
-#include <mrobot_driver_msgs/vci_can.h>
+#include <mrobot_msgs/vci_can.h>
 #include <roscan/cm_can_id.h>
 #include <roscan/can_long_frame.h>
 #include <can_interface/CanVCI.h>
@@ -68,16 +68,16 @@ class can_transceiver
         {
             is_log_on = can_log_on;
             can_itf = new CanVCI(4,0,0,2,buffer_log_on);
-            can_power_pub = n.advertise<mrobot_driver_msgs::vci_can>("rx_power_node", 1000);//adam
-            can_sensor_pub = n.advertise<mrobot_driver_msgs::vci_can>("rx_sensor_node", 1000);//kiqi
-            can_supersonic_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_ultrasonic", 1000);//kaka@2017/11/19
-            can_micro_laser_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_micro_laser", 1000);//kaka@2017/11/30
-            can_base_pub = n.advertise<mrobot_driver_msgs::vci_can>("rx_base_node", 1000);//zero
-            can_sub_power_pub = n.advertise<mrobot_driver_msgs::vci_can>("rx_sub_power_node", 1000);//kaka
-            can_unknown_pub = n.advertise<mrobot_driver_msgs::vci_can>("rx_unknown_node", 1000);//adam
-            can_test_pub = n.advertise<mrobot_driver_msgs::vci_can>("rx_test_node", 1000);//adam
-            can_rfid_pub = n.advertise<mrobot_driver_msgs::vci_can>("rx_rfid_node", 1000);//adam@2017/09/21
-            //pub2starline_pub = n.advertise<mrobot_driver_msgs::vci_can>("rx_sensor_node", 1000);//milk@2017/10/24
+            can_power_pub = n.advertise<mrobot_msgs::vci_can>("rx_power_node", 1000);//adam
+            can_sensor_pub = n.advertise<mrobot_msgs::vci_can>("rx_sensor_node", 1000);//kiqi
+            can_supersonic_pub = n.advertise<mrobot_msgs::vci_can>("can_to_ultrasonic", 1000);//kaka@2017/11/19
+            can_micro_laser_pub = n.advertise<mrobot_msgs::vci_can>("can_to_micro_laser", 1000);//kaka@2017/11/30
+            can_base_pub = n.advertise<mrobot_msgs::vci_can>("rx_base_node", 1000);//zero
+            can_sub_power_pub = n.advertise<mrobot_msgs::vci_can>("rx_sub_power_node", 1000);//kaka
+            can_unknown_pub = n.advertise<mrobot_msgs::vci_can>("rx_unknown_node", 1000);//adam
+            can_test_pub = n.advertise<mrobot_msgs::vci_can>("rx_test_node", 1000);//adam
+            can_rfid_pub = n.advertise<mrobot_msgs::vci_can>("rx_rfid_node", 1000);//adam@2017/09/21
+            //pub2starline_pub = n.advertise<mrobot_msgs::vci_can>("rx_sensor_node", 1000);//milk@2017/10/24
 
             can_power_sub = n.subscribe("tx_power_node", 1000, &can_transceiver::canReceiveCallback, this);//adam
             can_sensor_sub = n.subscribe("tx_sensor_node", 1000, &can_transceiver::canReceiveCallback, this);//kiqi
@@ -94,14 +94,14 @@ class can_transceiver
 
 
 
-            arm_move_pub = n.advertise<mrobot_driver_msgs::vci_can>("arm_control_node", 1000);
-            head_move_pub = n.advertise<mrobot_driver_msgs::vci_can>("head_control_node", 1000);
-            camera_move_pub = n.advertise<mrobot_driver_msgs::vci_can>("camera_control_node", 1000);
-            scan_move_pub = n.advertise<mrobot_driver_msgs::vci_can>("scanner_control_node", 1000);
-            can_to_noah_powerboard_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_noah_powerboard", 1000);//Kaka@2017/10/30
-            can_to_auto_charger_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_auto_charger", 1000);//Kaka@2017/11/06
-            can_to_laser_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_laser", 1000);//Kaka@2017/11/16
-            can_to_smart_lock_pub = n.advertise<mrobot_driver_msgs::vci_can>("can_to_smart_lock", 1000);//Kaka@2018/08/15
+            arm_move_pub = n.advertise<mrobot_msgs::vci_can>("arm_control_node", 1000);
+            head_move_pub = n.advertise<mrobot_msgs::vci_can>("head_control_node", 1000);
+            camera_move_pub = n.advertise<mrobot_msgs::vci_can>("camera_control_node", 1000);
+            scan_move_pub = n.advertise<mrobot_msgs::vci_can>("scanner_control_node", 1000);
+            can_to_noah_powerboard_pub = n.advertise<mrobot_msgs::vci_can>("can_to_noah_powerboard", 1000);//Kaka@2017/10/30
+            can_to_auto_charger_pub = n.advertise<mrobot_msgs::vci_can>("can_to_auto_charger", 1000);//Kaka@2017/11/06
+            can_to_laser_pub = n.advertise<mrobot_msgs::vci_can>("can_to_laser", 1000);//Kaka@2017/11/16
+            can_to_smart_lock_pub = n.advertise<mrobot_msgs::vci_can>("can_to_smart_lock", 1000);//Kaka@2018/08/15
 
 
             arm_sub = n.subscribe("arm_msgs", 1000, &can_transceiver::canReceiveCallback, this);
@@ -112,10 +112,10 @@ class can_transceiver
             scanner_sub = n.subscribe("scanner_control", 1000, &can_transceiver::canReceiveCallback, this);
         }
 
-        mrobot_driver_msgs::vci_can receive_func( void )
+        mrobot_msgs::vci_can receive_func( void )
         {
             can::CanMsg CMsg;
-            mrobot_driver_msgs::vci_can can_msg;
+            mrobot_msgs::vci_can can_msg;
             if( can_itf->readOneMsgFromRxBuffer(&CMsg) )
             {
                 can_msg.ID = CMsg.getID();
@@ -134,7 +134,7 @@ class can_transceiver
             return can_msg;
         }
 
-        void canReceiveCallback(const mrobot_driver_msgs::vci_can::ConstPtr& can_msg)
+        void canReceiveCallback(const mrobot_msgs::vci_can::ConstPtr& can_msg)
         {
             can::CanMsg CMsg;
             CMsg.setID(can_msg->ID);
@@ -152,7 +152,7 @@ class can_transceiver
         }
         void update ()
         {
-            mrobot_driver_msgs::vci_can can_msg;
+            mrobot_msgs::vci_can can_msg;
             can_id_union can_id_u;
             ros::spinOnce();
             can_msg = receive_func();

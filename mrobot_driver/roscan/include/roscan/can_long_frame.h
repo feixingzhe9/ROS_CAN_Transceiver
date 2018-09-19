@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <sys/types.h>
 #include <can_interface/CanMsg.h>
-#include <mrobot_driver_msgs/vci_can.h>
+#include <mrobot_msgs/vci_can.h>
 
 #define CAN_BUF_NO_THIS_ID          0xfe
 #define CAN_LONG_FRAME_TIME_OUT     5000/SYSTICK_PERIOD
@@ -172,9 +172,9 @@ class can_long_frame
 
     uint32_t can_comm_start_time;
 
-    mrobot_driver_msgs::vci_can frame_construct( const mrobot_driver_msgs::vci_can::ConstPtr& CMsg )
+    mrobot_msgs::vci_can frame_construct( const mrobot_msgs::vci_can::ConstPtr& CMsg )
     {
-        mrobot_driver_msgs::vci_can can_msg;
+        mrobot_msgs::vci_can can_msg;
 
         CAN_ID_UNION id;
         CAN_DATA_UNION rx_buf;
@@ -263,9 +263,9 @@ class can_long_frame
         return can_msg;
     }
 
-    mrobot_driver_msgs::vci_can frame_construct( can::CanMsg * CMsg )
+    mrobot_msgs::vci_can frame_construct( can::CanMsg * CMsg )
     {
-        mrobot_driver_msgs::vci_can can_msg;
+        mrobot_msgs::vci_can can_msg;
 
         CAN_ID_UNION id;
         CAN_DATA_UNION rx_buf;
@@ -352,7 +352,7 @@ class can_long_frame
         return can_msg;
     }
 
-    void frame_parser(const mrobot_driver_msgs::vci_can* can_msg, sendhandle_fn send_handle)
+    void frame_parser(const mrobot_msgs::vci_can* can_msg, sendhandle_fn send_handle)
     {
         can::CanMsg CMsg;
         uint16_t t_len;
